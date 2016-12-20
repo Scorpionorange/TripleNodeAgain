@@ -112,6 +112,22 @@ public class SparseArray {
     }
 
     public SparseArray transpose(){
-        // TODO:未完成 2016.12.18
+        SparseArray tm = new SparseArray(nums); // 创建一个转置后的矩阵对象
+        tm.cols = rows; // 行列变化，非零个数不变
+        tm.rows = cols;
+        tm.nums = nums;
+        int q = 0;
+        // 从小到大扫描列号，然后进行变化
+        for(int col = 0; col < cols; col++){
+            for(int p = 0; p < nums; p++){
+                if(data[p].getColumn() == col){
+                    tm.data[q].setColumn(data[p].getRow());
+                    tm.data[q].setRow(data[p].getColumn());
+                    tm.data[q].setValue(data[p].getValue());
+                    q++;
+                }
+            }
+        }
+        return tm;
     }
 }
