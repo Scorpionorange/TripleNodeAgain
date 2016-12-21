@@ -130,4 +130,40 @@ public class SparseArray {
         }
         return tm;
     }
+
+    public SparseArray fastTranspose(){
+        /*
+         * 首先将位置进行预留，然后再填空。
+         * num[cols]；每一个“空”的大小
+         * copt[cols]；每一个“空”的起始位置
+         */
+        SparseArray tm = new SparseArray(nums); // 创建一个装置后的对象
+        tm.cols = rows; // 行列变化，非零元素个数不变
+        tm.rows = cols;
+        tm.nums = nums;
+        int tCol = 0, indexOfC = 0;
+        if(nums > 0){
+            int[] num = new int[cols]; // 原始矩阵中第col列的非零元素的个数
+            int[] copt = new int[cols]; // 初始值为N中第tCol列的第一个非零元素在tm中的位置
+            // 初始化num和copt数组
+            for(int i = 0; i < nums; i++){
+                tCol = data[i].getColumn();
+                num[tCol]++;
+            }
+            copt[0] = 0;
+            for(int i = 0; i < cols; i++){
+                copt[i] = copt[i - 1] + num[i - 1];
+            }
+            // 找到每一个元素在转置后的三元组中的位置
+            for(int i = 0; i < nums; i++){
+                tCol = data[i].getColumn(); // 取得扫描tm中的第i个元素的列值tCol
+                indexOfC = copt[tCol]; // 取得该tCol列的下一个元素应该存储的位置
+                tm.data[indexOfC].setRow(data[i].getColumn());
+                tm.data[indexOfC].setColumn(data[i].getRow());
+                tm.data[indexOfC].setValue(data[i].getValue());
+                copt[tCol]++; // 此时的copt[tCol]表示的是下一个该tCol列元素会存储的位置
+            }
+        }
+        return tm;
+    }
 }
